@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "players",
+  "info": {
+    "name": "Players",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "money": {
+      "type": "integer",
+      "default": 100000,
+      "required": true,
+      "max": 100000,
+      "min": 0
+    },
+    "status": {
+      "type": "boolean"
+    }
+  }
+}

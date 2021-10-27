@@ -1,5 +1,5 @@
 {
-  "name": "postaw-na-milion-clone",
+  "name": "web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,7 +11,9 @@
   "dependencies": {
     "next": "11.1.2",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "socket.io-client": "^4.3.2",
+    "swr": "^1.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.3.7",
