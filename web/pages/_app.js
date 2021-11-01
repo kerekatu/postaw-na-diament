@@ -1,4 +1,5 @@
 import { SWRConfig } from 'swr'
+import { RecoilRoot } from 'recoil'
 import '../styles/globals.css'
 
 const SWR_OPTIONS = {
@@ -8,7 +9,9 @@ const SWR_OPTIONS = {
 function MyApp({ Component, pageProps }) {
   return (
     <SWRConfig value={SWR_OPTIONS}>
-      <Component {...pageProps} />
+      <RecoilRoot>
+        <Component {...pageProps} />
+      </RecoilRoot>
     </SWRConfig>
   )
 }

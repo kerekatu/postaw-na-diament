@@ -27,6 +27,7 @@ module.exports = {
       green: colors.green,
       blue: colors.blue,
       white: colors.white,
+      yellow: colors.yellow,
     },
   },
   variants: {
@@ -34,5 +35,5 @@ module.exports = {
       height: ['hover', 'focus'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }

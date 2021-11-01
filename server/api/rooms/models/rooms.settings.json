@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rooms",
+  "info": {
+    "name": "Rooms",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "roomId": {
+      "type": "string",
+      "maxLength": 4,
+      "minLength": 4,
+      "required": true
+    }
+  }
+}

@@ -13,13 +13,13 @@ const Header = () => {
           <a className="text-xl font-bold">Postaw na Tunkę</a>
         </Link>
         <ul className="flex gap-8">
-          {NAV_OPTIONS.map((item, index) => (
+          {/* {NAV_OPTIONS.map((item, index) => (
             <li key={index}>
               <Link href={item.href}>
                 <a>{item.label}</a>
               </Link>
             </li>
-          ))}
+          ))} */}
         </ul>
       </div>
     </header>
