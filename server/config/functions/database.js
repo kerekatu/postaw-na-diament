@@ -31,19 +31,28 @@ async function findRoomById(roomId) {
   }
 }
 
-// insert player and player data to db
+// insert player and player data to DB
 async function createPlayer({ username, roomId, status, socketId }) {
   try {
-    const user = await strapi.services.players.create({
+    const player = await strapi.services.players.create({
       username,
       roomId,
       status,
       socketId,
     });
 
-    return user;
+    return player;
   } catch (error) {
     console.log("Gracz nie mógł zostać utworzony!", error);
+  }
+}
+
+async function deletePlayer(socketId) {
+  try {
+    const player = await strapi.services.players.delete({ socketId });
+    return player;
+  } catch (error) {
+    console.log("Gracz nie mógł zostać usunięty!", error);
   }
 }
 
@@ -51,5 +60,6 @@ module.exports = {
   getPlayersInRoom,
   findPlayer,
   createPlayer,
+  deletePlayer,
   findRoomById,
 };

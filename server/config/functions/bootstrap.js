@@ -4,6 +4,7 @@ const {
   createPlayer,
   findRoomById,
   getPlayersInRoom,
+  deletePlayer,
 } = require("./database");
 const { Server } = require("socket.io");
 
@@ -28,6 +29,7 @@ module.exports = () => {
   });
 
   io.on("connection", (socket) => {
+    // On client submitting event to join a room
     socket.on("join", async ({ username, roomId }, callback) => {
       try {
         const playerExists = await findPlayer(username, roomId);
@@ -72,6 +74,24 @@ module.exports = () => {
           } else {
             callback(`Gracz nie mógł zostać utworzony`);
           }
+        }
+      } catch (error) {
+        console.log("Coś poszło nie tak,", error);
+      }
+    });
+
+    socket.on("disconnection", async (data) => {
+      try {
+        const player = await deletePlayer(socket.id);
+        if (player.length > 0) {
+          io.to(player[0].roomId).emit("message", {
+            player: player[0].username,
+            text: `Player ${player[0].username} has left the chat.`,
+          });
+          io.to(player.roomId).emit("roomInfo", {
+            roomId: player.roomId,
+            players: await getPlayersInRoom(player.roomId),
+          });
         }
       } catch (error) {
         console.log("Coś poszło nie tak,", error);

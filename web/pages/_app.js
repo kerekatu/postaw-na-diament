@@ -1,5 +1,5 @@
 import { SWRConfig } from 'swr'
-import { RecoilRoot } from 'recoil'
+import PlayerContextProvider from '@/context/PlayerContext'
 import '../styles/globals.css'
 
 const SWR_OPTIONS = {
@@ -9,9 +9,9 @@ const SWR_OPTIONS = {
 function MyApp({ Component, pageProps }) {
   return (
     <SWRConfig value={SWR_OPTIONS}>
-      <RecoilRoot>
+      <PlayerContextProvider>
         <Component {...pageProps} />
-      </RecoilRoot>
+      </PlayerContextProvider>
     </SWRConfig>
   )
 }

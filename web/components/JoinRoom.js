@@ -1,23 +1,22 @@
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { joinSchema } from '@/libs/yup'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { socket } from '@/libs/web-sockets'
 import { useRouter } from 'next/router'
-import { useSetRecoilState } from 'recoil'
-import { playerDataState } from '@/libs/atoms'
-import Button from './common/Button'
-import Input from './common/Input'
+import Button from '@/components/common/Button'
+import Input from '@/components/common/Input'
+import { PlayerContext } from '@/context/PlayerContext'
 
 const JoinRoom = () => {
   const [errorMessageOnResponse, setErrorMessageOnResponse] = useState('')
+  const { setPlayerData } = useContext(PlayerContext)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(joinSchema) })
   const router = useRouter()
-  const setPlayerData = useSetRecoilState(playerDataState)
 
   useEffect(() => {
     const messageTimer = () =>
@@ -35,7 +34,7 @@ const JoinRoom = () => {
           setErrorMessageOnResponse(response.message)
         } else {
           socket.on('welcome', ({ playerData }) => {
-            setPlayerData((prevPlayerData) => [...prevPlayerData, playerData])
+            setPlayerData(playerData)
             router.push(`/room/${playerData.roomId}`)
           })
         }
@@ -65,7 +64,11 @@ const JoinRoom = () => {
       <Button type="submit" variant="primary" className="mt-2 w-60 self-center">
         Dołącz do gry
       </Button>
-      {errorMessageOnResponse && <p>{errorMessageOnResponse}</p>}
+      {errorMessageOnResponse && (
+        <span className="text-red-400 font-bold text-sm text-center">
+          {errorMessageOnResponse}
+        </span>
+      )}
     </form>
   )
 }

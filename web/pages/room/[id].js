@@ -1,11 +1,12 @@
-import Game from '@/components/Game/Game'
+import Game from '@/components/room/Game'
+import GameLobby from '@/components/room/GameLobby'
 import Layout from '@/components/Layout'
 
-export default function Home() {
+export default function Room() {
   return (
     <Layout>
       <section>
-        <Game />
+        <GameLobby />
       </section>
     </Layout>
   )
