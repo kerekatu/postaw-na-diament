@@ -4,19 +4,31 @@ import { joinSchema } from '@/libs/yup'
 import { useEffect, useState, useContext } from 'react'
 import { socket } from '@/libs/web-sockets'
 import { useRouter } from 'next/router'
+import { PlayerContext } from '@/context/PlayerContext'
+import { RoomContext } from '@/context/RoomContext'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-import { PlayerContext } from '@/context/PlayerContext'
+import Image from 'next/image'
 
 const JoinRoom = () => {
   const [errorMessageOnResponse, setErrorMessageOnResponse] = useState('')
-  const { setPlayerData } = useContext(PlayerContext)
+  const { playerData, setPlayerData } = useContext(PlayerContext)
+  const { setRoomPlayers } = useContext(RoomContext)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(joinSchema) })
   const router = useRouter()
+
+  useEffect(() => {
+    let mounted = false
+
+    if (!mounted && Object.keys(playerData).length > 0) {
+      mounted = true
+      setPlayerData({})
+    }
+  }, [])
 
   useEffect(() => {
     const messageTimer = () =>
@@ -29,13 +41,16 @@ const JoinRoom = () => {
 
   const onSubmit = (data) => {
     try {
-      socket.emit('join', data, (response) => {
+      socket.emit('JOIN_ROOM', data, (response) => {
         if (response.status === '403') {
           setErrorMessageOnResponse(response.message)
         } else {
           socket.on('welcome', ({ playerData }) => {
             setPlayerData(playerData)
-            router.push(`/room/${playerData.roomId}`)
+          })
+          socket.on('roomInfo', (data) => {
+            setRoomPlayers(data.players)
+            router.push(`/room/${data.roomId}`)
           })
         }
       })
@@ -45,31 +60,57 @@ const JoinRoom = () => {
   }
 
   return (
-    <form
-      className="flex flex-col items-center gap-4 w-96"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Input
-        type="text"
-        placeholder="Podaj swoją nazwę"
-        error={errors?.username?.message}
-        {...register('username')}
-      />
-      <Input
-        type="text"
-        placeholder="Podaj numer pokoju"
-        error={errors?.roomId?.message}
-        {...register('roomId')}
-      />
-      <Button type="submit" variant="primary" className="mt-2 w-60 self-center">
-        Dołącz do gry
-      </Button>
-      {errorMessageOnResponse && (
-        <span className="text-red-400 font-bold text-sm text-center">
-          {errorMessageOnResponse}
-        </span>
-      )}
-    </form>
+    <section className="flex min-w-full items-center justify-center">
+      <form
+        className="flex flex-col items-center gap-4 w-96"
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <Image
+          src="/static/logo.svg"
+          alt="Logo Uncut Diamonds"
+          height={150}
+          width={400}
+        />
+        <Input
+          type="text"
+          placeholder="Podaj swoją nazwę"
+          error={errors?.username?.message}
+          {...register('username')}
+        />
+        <Input
+          type="text"
+          placeholder="Podaj numer pokoju"
+          error={errors?.roomId?.message}
+          {...register('roomId')}
+        />
+        <div className="flex gap-4">
+          <Button
+            type="submit"
+            variant="primary"
+            color="yellow"
+            className="mt-2"
+          >
+            Dołącz do gry
+          </Button>
+          <Button
+            variant="primary"
+            color="blue"
+            className="mt-2"
+            target="_blank"
+            link="https://discord.gg/HYsRmJVjSW"
+          >
+            Dołącz do Discorda
+          </Button>
+        </div>
+
+        {errorMessageOnResponse && (
+          <span className="text-red-400 font-bold text-sm text-center">
+            {errorMessageOnResponse}
+          </span>
+        )}
+      </form>
+    </section>
   )
 }
 

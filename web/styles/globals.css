@@ -2,11 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: -1;
+  opacity: 0.01;
+  background: url('/static/diament.png') center;
+  background-size: 6rem 6rem;
+  transform: rotate(50deg);
+}
+
 #__next {
   min-height: 100vh;
+  scroll-behavior: smooth;
 }
 
 button,
 input[type='submit'] {
   cursor: pointer;
+}
+
+.dots::after {
+  display: inline-block;
+  animation: ellipsis 1.25s infinite;
+  content: '.';
+  width: 1em;
+  text-align: left;
+}
+
+@keyframes ellipsis {
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
 }

@@ -30,7 +30,7 @@ module.exports = () => {
 
   io.on("connection", (socket) => {
     // On client submitting event to join a room
-    socket.on("join", async ({ username, roomId }, callback) => {
+    socket.on("JOIN_ROOM", async ({ username, roomId }, callback) => {
       try {
         const playerExists = await findPlayer(username, roomId);
         const roomExists = await findRoomById(roomId);
@@ -57,6 +57,7 @@ module.exports = () => {
                 message: `Gracz ${username} dołączył do pokoju ${player.roomId}`,
                 status: "200",
               });
+
               socket.emit("welcome", {
                 player: "bot",
                 text: `${player.username} witamy w pokoju ${player.roomId}`,

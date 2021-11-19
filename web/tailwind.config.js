@@ -29,6 +29,11 @@ module.exports = {
       white: colors.white,
       yellow: colors.yellow,
     },
+    extend: {
+      gridTemplateRows: {
+        layout: '80px 1fr 80px',
+      },
+    },
   },
   variants: {
     extend: {
