@@ -5,6 +5,7 @@ const {
   findRoomById,
   getPlayersInRoom,
   deletePlayer,
+  createRoomWithHost,
 } = require("./database");
 const { Server } = require("socket.io");
 
@@ -29,6 +30,52 @@ module.exports = () => {
   });
 
   io.on("connection", (socket) => {
+    // on host creating new room & joining
+    socket.on("CREATE_ROOM", async ({ username, roomId }, callback) => {
+      try {
+        const roomExists = await findRoomById(roomId);
+
+        if (roomExists?.roomId) {
+          callback({
+            message: `Pokój z kodem (${roomId}) już istnieje`,
+            status: "403",
+          });
+        } else {
+          const room = await createRoomWithHost({ roomId, hostId: socket.id });
+          const player = await createPlayer({
+            username,
+            roomId,
+            status: "WAITING",
+            socketId: socket.id,
+          });
+          const players = await getPlayersInRoom(player.roomId);
+
+          if (room && player) {
+            socket.join(player.roomId);
+            callback({
+              message: `Host ${username} dołączył do pokoju ${player.roomId}`,
+              status: "200",
+            });
+            socket.emit("welcome", {
+              text: `${player.username} witamy w pokoju ${player.roomId}`,
+              playerData: player,
+            });
+            socket.broadcast.to(player.roomId).emit("message", {
+              text: `${player.username} dołączył do pokoju`,
+            });
+            io.to(player.roomId).emit("roomInfo", {
+              roomId: player.roomId,
+              players,
+            });
+          } else {
+            callback(`Gracz nie mógł zostać utworzony`);
+          }
+        }
+      } catch (error) {
+        console.log("Coś poszło nie tak, ", error);
+      }
+    });
+
     // On client submitting event to join a room
     socket.on("JOIN_ROOM", async ({ username, roomId }, callback) => {
       try {
@@ -45,7 +92,7 @@ module.exports = () => {
             const player = await createPlayer({
               username,
               roomId,
-              status: "PLAYING",
+              status: "WAITING",
               socketId: socket.id,
             });
 
@@ -59,12 +106,10 @@ module.exports = () => {
               });
 
               socket.emit("welcome", {
-                player: "bot",
                 text: `${player.username} witamy w pokoju ${player.roomId}`,
                 playerData: player,
               });
               socket.broadcast.to(player.roomId).emit("message", {
-                player: "bot",
                 text: `${player.username} dołączył do pokoju`,
               });
               io.to(player.roomId).emit("roomInfo", {
@@ -73,15 +118,18 @@ module.exports = () => {
               });
             }
           } else {
-            callback(`Gracz nie mógł zostać utworzony`);
+            callback({
+              message: `Pokój (${roomId}) nie istnieje`,
+              status: "403",
+            });
           }
         }
       } catch (error) {
-        console.log("Coś poszło nie tak,", error);
+        console.log("Coś poszło nie tak, ", error);
       }
     });
 
-    socket.on("disconnection", async (data) => {
+    socket.on("disconnect", async (data) => {
       try {
         const player = await deletePlayer(socket.id);
         if (player.length > 0) {

@@ -1,9 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "rooms",
+  "collectionName": "categories",
   "info": {
-    "name": "Rooms",
-    "description": ""
+    "name": "Categories"
   },
   "options": {
     "increments": true,
@@ -12,16 +11,10 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "roomId": {
+    "title": {
       "type": "string",
-      "maxLength": 4,
-      "minLength": 4,
       "required": true,
       "unique": true
-    },
-    "hostId": {
-      "type": "string",
-      "required": true
     }
   }
 }

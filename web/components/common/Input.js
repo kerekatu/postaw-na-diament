@@ -1,4 +1,5 @@
 import React from 'react'
+import Error from '@/components/common/Error'
 
 const Input = React.forwardRef(
   ({ label, type = 'text', error, ...props }, ref) => {
@@ -21,11 +22,7 @@ const Input = React.forwardRef(
             {...props}
           />
         )}
-        {error && (
-          <span className="text-red-400 font-bold text-sm text-center">
-            {error}
-          </span>
-        )}
+        {error && <Error>{error}</Error>}
       </div>
     )
   }

@@ -1,3 +1,13 @@
+// create a new room by a host
+async function createRoomWithHost({ roomId, hostId }) {
+  try {
+    const room = await strapi.services.rooms.create({ roomId, hostId });
+    return room;
+  } catch (error) {
+    console.log("Coś poszło nie tak!", error);
+  }
+}
+
 // query players by roomId (in room)
 async function getPlayersInRoom(roomId) {
   try {
@@ -57,6 +67,7 @@ async function deletePlayer(socketId) {
 }
 
 module.exports = {
+  createRoomWithHost,
   getPlayersInRoom,
   findPlayer,
   createPlayer,

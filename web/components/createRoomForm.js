@@ -9,8 +9,9 @@ import { RoomContext } from '@/context/RoomContext'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import Image from 'next/image'
+import Error from '@/components/common/Error'
 
-const JoinRoom = () => {
+const CreateRoomForm = () => {
   const [errorMessageOnResponse, setErrorMessageOnResponse] = useState('')
   const { playerData, setPlayerData } = useContext(PlayerContext)
   const { setRoomPlayers } = useContext(RoomContext)
@@ -22,6 +23,7 @@ const JoinRoom = () => {
   const router = useRouter()
 
   useEffect(() => {
+    // set playerData back to empty object when component has mounted
     let mounted = false
 
     if (!mounted && Object.keys(playerData).length > 0) {
@@ -41,13 +43,10 @@ const JoinRoom = () => {
 
   const onSubmit = (data) => {
     try {
-      socket.emit('JOIN_ROOM', data, (response) => {
+      socket.emit('CREATE_ROOM', data, (response) => {
         if (response.status === '403') {
           setErrorMessageOnResponse(response.message)
         } else {
-          socket.on('welcome', ({ playerData }) => {
-            setPlayerData(playerData)
-          })
           socket.on('roomInfo', (data) => {
             setRoomPlayers(data.players)
             router.push(`/room/${data.roomId}`)
@@ -60,58 +59,31 @@ const JoinRoom = () => {
   }
 
   return (
-    <section className="flex min-w-full items-center justify-center">
-      <form
-        className="flex flex-col items-center gap-4 w-96"
-        autoComplete="off"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Image
-          src="/static/logo.svg"
-          alt="Logo Uncut Diamonds"
-          height={150}
-          width={400}
-        />
-        <Input
-          type="text"
-          placeholder="Podaj swoją nazwę"
-          error={errors?.username?.message}
-          {...register('username')}
-        />
-        <Input
-          type="text"
-          placeholder="Podaj numer pokoju"
-          error={errors?.roomId?.message}
-          {...register('roomId')}
-        />
-        <div className="flex gap-4">
-          <Button
-            type="submit"
-            variant="primary"
-            color="yellow"
-            className="mt-2"
-          >
-            Dołącz do gry
-          </Button>
-          <Button
-            variant="primary"
-            color="blue"
-            className="mt-2"
-            target="_blank"
-            link="https://discord.gg/HYsRmJVjSW"
-          >
-            Dołącz do Discorda
-          </Button>
-        </div>
+    <form
+      className="flex flex-col items-center gap-4 w-96"
+      autoComplete="off"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <h1 className="text-4xl font-bold text-white mb-4">Stwórz Pokój</h1>
+      <Input
+        type="text"
+        placeholder="Podaj swoją nazwę"
+        error={errors?.username?.message}
+        {...register('username')}
+      />
+      <Input
+        type="text"
+        placeholder="4 znakowy kod pokoju"
+        error={errors?.roomId?.message}
+        {...register('roomId')}
+      />
+      <Button type="submit" variant="primary" color="yellow" className="mt-2">
+        Utwórz pokój
+      </Button>
 
-        {errorMessageOnResponse && (
-          <span className="text-red-400 font-bold text-sm text-center">
-            {errorMessageOnResponse}
-          </span>
-        )}
-      </form>
-    </section>
+      {errorMessageOnResponse && <Error>{errorMessageOnResponse}</Error>}
+    </form>
   )
 }
 
-export default JoinRoom
+export default CreateRoomForm

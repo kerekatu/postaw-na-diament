@@ -1,12 +1,14 @@
-import JoinRoomForm from '@/components/JoinRoomForm'
 import Layout from '@/components/containers/Layout'
+import CreateRoomForm from '@/components/createRoomForm'
 
-export default function Home() {
+const CreateRoom = () => {
   return (
     <Layout>
       <section className="flex min-w-full items-center justify-center">
-        <JoinRoomForm />
+        <CreateRoomForm />
       </section>
     </Layout>
   )
 }
+
+export default CreateRoom
