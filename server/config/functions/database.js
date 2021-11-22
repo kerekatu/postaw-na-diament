@@ -12,6 +12,7 @@ async function createRoomWithHost({ roomId, hostId }) {
 async function getPlayersInRoom(roomId) {
   try {
     const playersInRoom = await strapi.services.players.find({ roomId });
+    playersInRoom.forEach((data) => delete data?.socketId);
     return playersInRoom;
   } catch (error) {
     console.log("Coś poszło nie tak!", error);
@@ -35,6 +36,15 @@ async function findPlayer(username, roomId) {
 async function findRoomById(roomId) {
   try {
     const roomExists = await strapi.services.rooms.findOne({ roomId });
+    return roomExists;
+  } catch (error) {
+    console.log("Coś poszło nie tak!", error);
+  }
+}
+
+async function findRoomByHostId(hostId) {
+  try {
+    const roomExists = await strapi.services.rooms.findOne({ hostId });
     return roomExists;
   } catch (error) {
     console.log("Coś poszło nie tak!", error);
@@ -73,4 +83,5 @@ module.exports = {
   createPlayer,
   deletePlayer,
   findRoomById,
+  findRoomByHostId,
 };

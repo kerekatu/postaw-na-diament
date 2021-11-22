@@ -6,6 +6,7 @@ const {
   getPlayersInRoom,
   deletePlayer,
   createRoomWithHost,
+  findRoomByHostId,
 } = require("./database");
 const { Server } = require("socket.io");
 
@@ -129,6 +130,19 @@ module.exports = () => {
       }
     });
 
+    socket.on("START_GAME", async (data, callback) => {
+      try {
+        const room = await findRoomByHostId(data?.socketId);
+        if (room) {
+          callback({ message: "Gra została rozpoczęta", status: "200" });
+        } else {
+          callback({ message: "Nie jesteś hostem pokoju", status: "403" });
+        }
+      } catch (error) {
+        console.log("Coś poszło nie tak, ", error);
+      }
+    });
+
     socket.on("disconnect", async (data) => {
       try {
         const player = await deletePlayer(socket.id);
@@ -143,7 +157,7 @@ module.exports = () => {
           });
         }
       } catch (error) {
-        console.log("Coś poszło nie tak,", error);
+        console.log("Coś poszło nie tak, ", error);
       }
     });
   });

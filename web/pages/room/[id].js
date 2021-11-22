@@ -7,8 +7,7 @@ import Game from '@/components/room/Game'
 import Layout from '@/components/containers/Layout'
 import GameSidebar from '@/components/room/GameSidebar'
 import GameLobby from '@/components/room/GameLobby'
-
-// export const getServerSideProps = () => {}
+import { socket } from '@/libsweb-sockets'
 
 export default function Room() {
   const { roomPlayers } = useContext(RoomContext)
@@ -25,12 +24,26 @@ export default function Room() {
     }
   }, [playerData, router])
 
+  const handleStartGame = () => {
+    socket.emit('START_GAME', playerData, (response) => {
+      if (response?.status === '403') {
+        console.log(response.message)
+      } else {
+        setGameStarted(true)
+      }
+    })
+  }
+
   return (
     <Layout>
       <section className="min-w-full min-h-full">
         <div className="grid grid-cols-6 gap-24 min-w-full min-h-full">
           <GameSidebar roomPlayers={roomPlayers} player={playerData} />
-          {!gameStarted ? <GameLobby /> : <Game />}
+          {!gameStarted ? (
+            <GameLobby handleStartGame={handleStartGame} />
+          ) : (
+            <Game />
+          )}
         </div>
       </section>
     </Layout>

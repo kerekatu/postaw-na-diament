@@ -8,7 +8,6 @@ import { PlayerContext } from '@/context/PlayerContext'
 import { RoomContext } from '@/context/RoomContext'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-import Image from 'next/image'
 import Error from '@/components/common/Error'
 
 const CreateRoomForm = () => {
@@ -44,9 +43,12 @@ const CreateRoomForm = () => {
   const onSubmit = (data) => {
     try {
       socket.emit('CREATE_ROOM', data, (response) => {
-        if (response.status === '403') {
+        if (response?.status === '403') {
           setErrorMessageOnResponse(response.message)
         } else {
+          socket.on('welcome', ({ playerData }) => {
+            setPlayerData(playerData)
+          })
           socket.on('roomInfo', (data) => {
             setRoomPlayers(data.players)
             router.push(`/room/${data.roomId}`)

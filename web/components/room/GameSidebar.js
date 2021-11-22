@@ -4,7 +4,7 @@ const GameSidebar = ({ player, roomPlayers }) => {
   return (
     <aside className="flex flex-col col-span-2 row-span-2 gap-6 text-lg">
       <div className="bg-gray-700 rounded-md p-4">
-        <p className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <strong>Numer pokoju:</strong>
           <button
             className="bg-gray-800 text-gray-400 px-4 transition-colors rounded-md hover:text-white"
@@ -14,7 +14,7 @@ const GameSidebar = ({ player, roomPlayers }) => {
           >
             kopiuj
           </button>
-        </p>
+        </div>
         <p className="truncate">
           <strong>Gracz:</strong> {player?.username}
         </p>
@@ -34,10 +34,10 @@ const GameSidebar = ({ player, roomPlayers }) => {
                     : ''
                 }`}
               >
-                <p className="flex justify-between gap-4 overflow-hidden">
+                <div className="flex justify-between gap-4 overflow-hidden">
                   <p className="truncate">{item.username}</p>
                   <span>{addSpaceEveryCharacter(item?.money)}d</span>
-                </p>
+                </div>
               </li>
             ))}
         </ul>
