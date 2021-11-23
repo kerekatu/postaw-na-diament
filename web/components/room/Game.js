@@ -4,13 +4,16 @@ import useSWR from 'swr'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
-const Game = () => {
+export default function Game() {
   const [currentQuestion, setCurrentQuestion] = useState(1)
   const [selectedAnswer, setSelectedAnswer] = useState('')
   const [currentAnswers, setCurrentAnswers] = useState([])
+  const [selectedMoney, setSelectedMoney] = useState(1000)
   const { data: question, error } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/questions/${currentQuestion}`
   )
+
+  const handleBetting = () => {}
 
   useEffect(() => {
     if (!question) return
@@ -33,31 +36,39 @@ const Game = () => {
   if (!question) return <></>
 
   return (
-    <>
+    <div className="flex flex-col gap-6 col-span-4 row-span-2">
       {/* {question.illustration && (
-          <div className="mb-10 h-80 rounded-md relative transition-all hover:h-[600px]">
-            <Image
-              src={`${process.env.NEXT_PUBLIC_API_URL}${question.illustration.url}`}
-              alt={`Illustration to the question "${question.title}"`}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-md"
-            />
-          </div>
-        )} */}
-      <div className="bg-gray-600 p-10 rounded-md mb-10">
+        <div className="mb-10 h-80 rounded-md relative transition-all hover:h-[600px]">
+          <Image
+            src={`${process.env.NEXT_PUBLIC_API_URL}${question.illustration.url}`}
+            alt={`Illustration to the question "${question.title}"`}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-md"
+          />
+        </div>
+      )} */}
+      <div className="bg-gray-600 p-10 rounded-md">
         <span className="font-bold text-lg uppercase text-gray-400 pb-2 block">
           Pytanie {currentQuestion}
         </span>
         <h2 className="text-3xl font-bold">{question.title}</h2>
       </div>
-      <div className="flex items-center mb-10 gap-4">
+      <div className="flex items-center gap-4">
         <span className="text-xl font-bold">Obstaw:</span>
-        <div className="bg-gray-500 px-4 py-2 text-xl rounded-md">1000</div>
-        <button className="bg-gray-500 px-4 py-2 text-xl font-bold rounded-md text-green-500">
+        <div className="bg-gray-500 px-4 py-2 text-xl rounded-md">
+          {selectedMoney}
+        </div>
+        <button
+          className="bg-gray-500 px-4 py-2 text-xl font-bold rounded-md text-green-500"
+          onClick={() => setSelectedMoney((prevState) => prevState + 10000)}
+        >
           +
         </button>
-        <button className="bg-gray-500 px-4 py-2 text-xl font-bold rounded-md text-red-500">
+        <button
+          className="bg-gray-500 px-4 py-2 text-xl font-bold rounded-md text-red-500"
+          onClick={() => setSelectedMoney((prevState) => prevState - 10000)}
+        >
           -
         </button>
       </div>
@@ -78,8 +89,6 @@ const Game = () => {
           </button>
         ))}
       </div>
-    </>
+    </div>
   )
 }
-
-export default Game

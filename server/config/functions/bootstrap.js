@@ -46,7 +46,7 @@ module.exports = () => {
           const player = await createPlayer({
             username,
             roomId,
-            status: "WAITING",
+            isHost: true,
             socketId: socket.id,
           });
           const players = await getPlayersInRoom(player.roomId);
@@ -57,14 +57,11 @@ module.exports = () => {
               message: `Host ${username} dołączył do pokoju ${player.roomId}`,
               status: "200",
             });
-            socket.emit("welcome", {
+            socket.emit("SET_PLAYER_DATA", {
               text: `${player.username} witamy w pokoju ${player.roomId}`,
               playerData: player,
             });
-            socket.broadcast.to(player.roomId).emit("message", {
-              text: `${player.username} dołączył do pokoju`,
-            });
-            io.to(player.roomId).emit("roomInfo", {
+            io.to(player.roomId).emit("SET_ROOM_INFO", {
               roomId: player.roomId,
               players,
             });
@@ -93,7 +90,6 @@ module.exports = () => {
             const player = await createPlayer({
               username,
               roomId,
-              status: "WAITING",
               socketId: socket.id,
             });
 
@@ -106,14 +102,11 @@ module.exports = () => {
                 status: "200",
               });
 
-              socket.emit("welcome", {
+              socket.emit("SET_PLAYER_DATA", {
                 text: `${player.username} witamy w pokoju ${player.roomId}`,
                 playerData: player,
               });
-              socket.broadcast.to(player.roomId).emit("message", {
-                text: `${player.username} dołączył do pokoju`,
-              });
-              io.to(player.roomId).emit("roomInfo", {
+              io.to(player.roomId).emit("SET_ROOM_INFO", {
                 roomId: player.roomId,
                 players,
               });
@@ -133,8 +126,13 @@ module.exports = () => {
     socket.on("START_GAME", async (data, callback) => {
       try {
         const room = await findRoomByHostId(data?.socketId);
+
         if (room) {
           callback({ message: "Gra została rozpoczęta", status: "200" });
+          io.to(data?.roomId).emit("SET_PLAYING_STATUS", {
+            text: "Gra została rozpoczęta",
+            isReady: true,
+          });
         } else {
           callback({ message: "Nie jesteś hostem pokoju", status: "403" });
         }
@@ -151,7 +149,7 @@ module.exports = () => {
             player: player[0].username,
             text: `Player ${player[0].username} has left the chat.`,
           });
-          io.to(player.roomId).emit("roomInfo", {
+          io.to(player.roomId).emit("SET_ROOM_INFO", {
             roomId: player.roomId,
             players: await getPlayersInRoom(player.roomId),
           });

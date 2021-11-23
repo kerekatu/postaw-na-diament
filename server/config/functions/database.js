@@ -52,12 +52,13 @@ async function findRoomByHostId(hostId) {
 }
 
 // insert player and player data to DB
-async function createPlayer({ username, roomId, status, socketId }) {
+async function createPlayer({ username, roomId, status, isHost, socketId }) {
   try {
     const player = await strapi.services.players.create({
       username,
       roomId,
       status,
+      isHost,
       socketId,
     });
 

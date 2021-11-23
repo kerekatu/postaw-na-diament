@@ -35,6 +35,12 @@
     },
     "status": {
       "type": "string",
+      "required": true,
+      "default": "PLAYING"
+    },
+    "isHost": {
+      "type": "boolean",
+      "default": false,
       "required": true
     }
   }

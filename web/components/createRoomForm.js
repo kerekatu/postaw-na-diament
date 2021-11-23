@@ -46,10 +46,10 @@ const CreateRoomForm = () => {
         if (response?.status === '403') {
           setErrorMessageOnResponse(response.message)
         } else {
-          socket.on('welcome', ({ playerData }) => {
+          socket.on('SET_PLAYER_DATA', ({ playerData }) => {
             setPlayerData(playerData)
           })
-          socket.on('roomInfo', (data) => {
+          socket.on('SET_ROOM_INFO', (data) => {
             setRoomPlayers(data.players)
             router.push(`/room/${data.roomId}`)
           })

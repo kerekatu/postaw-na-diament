@@ -18,6 +18,13 @@ export default function Room() {
   const router = useRouter()
 
   useEffect(() => {
+    const handler = (data) => data.isReady && setGameStarted(true)
+    socket.on('SET_PLAYING_STATUS', handler)
+
+    return () => socket.off('SET_PLAYING_STATUS', handler)
+  }, [])
+
+  useEffect(() => {
     // send back to homepage if player is not defined
     if (!Object.keys(playerData).length > 0) {
       router.push('/')
@@ -28,8 +35,6 @@ export default function Room() {
     socket.emit('START_GAME', playerData, (response) => {
       if (response?.status === '403') {
         console.log(response.message)
-      } else {
-        setGameStarted(true)
       }
     })
   }
@@ -40,7 +45,10 @@ export default function Room() {
         <div className="grid grid-cols-6 gap-24 min-w-full min-h-full">
           <GameSidebar roomPlayers={roomPlayers} player={playerData} />
           {!gameStarted ? (
-            <GameLobby handleStartGame={handleStartGame} />
+            <GameLobby
+              handleStartGame={handleStartGame}
+              isHost={playerData?.isHost}
+            />
           ) : (
             <Game />
           )}
