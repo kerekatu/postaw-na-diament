@@ -40,7 +40,13 @@ export default function Room() {
   }
 
   return (
-    <Layout>
+    <Layout
+      customMeta={{
+        subtitle: `${
+          gameStarted ? '- Gra Rozpoczęta' : '- Poczekalnia w Pokoju'
+        }`,
+      }}
+    >
       <section className="min-w-full min-h-full">
         <div className="grid grid-cols-6 gap-24 min-w-full min-h-full">
           <GameSidebar roomPlayers={roomPlayers} player={playerData} />

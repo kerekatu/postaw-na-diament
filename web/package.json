@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.5",
     "@hookform/resolvers": "^2.8.2",
     "@tailwindcss/forms": "^0.3.4",
     "next": "11.1.2",

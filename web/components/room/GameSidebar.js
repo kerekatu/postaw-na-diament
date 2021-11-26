@@ -3,7 +3,8 @@ import { addSpaceEveryCharacter } from '@/libs/helpers'
 const GameSidebar = ({ player, roomPlayers }) => {
   return (
     <aside className="flex flex-col col-span-2 row-span-2 gap-6 text-lg">
-      <div className="bg-gray-700 rounded-md p-4">
+      <button className="bg-gray-700 p-4">Wyjdź</button>
+      <div className="bg-gray-700 rounded-md">
         <div className="flex items-center gap-2">
           <strong>Numer pokoju:</strong>
           <button
@@ -22,8 +23,11 @@ const GameSidebar = ({ player, roomPlayers }) => {
           <strong>Finanse:</strong> {addSpaceEveryCharacter(player?.money)}d
         </p>
       </div>
-      <div className="bg-gray-700 rounded-md p-4 overflow-y-auto items-start max-h-96">
+      <div className="bg-gray-700 rounded-md overflow-y-auto items-start max-h-96">
         <ul className="flex flex-col gap-4">
+          <p className="text-xl px-2 font-bold bg-gray-600 p-4">
+            Gracze ({roomPlayers.length})
+          </p>
           {roomPlayers.length > 0 &&
             roomPlayers?.map((item, index) => (
               <li

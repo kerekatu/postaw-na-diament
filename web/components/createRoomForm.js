@@ -62,11 +62,10 @@ const CreateRoomForm = () => {
 
   return (
     <form
-      className="flex flex-col items-center gap-4 w-96"
+      className="flex flex-col items-center gap-4"
       autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <h1 className="text-4xl font-bold text-white mb-4">Stwórz Pokój</h1>
       <Input
         type="text"
         placeholder="Podaj swoją nazwę"
@@ -75,13 +74,24 @@ const CreateRoomForm = () => {
       />
       <Input
         type="text"
-        placeholder="4 znakowy kod pokoju"
+        placeholder="Utwórz kod pokoju (4 znaki)"
         error={errors?.roomId?.message}
         {...register('roomId')}
       />
-      <Button type="submit" variant="primary" color="yellow" className="mt-2">
-        Utwórz pokój
-      </Button>
+      <div className="flex gap-4">
+        <Button type="submit" variant="primary" color="yellow" className="mt-2">
+          Utwórz pokój
+        </Button>
+        <Button
+          variant="primary"
+          color="blue"
+          className="mt-2"
+          target="_blank"
+          link="https://discord.gg/HYsRmJVjSW"
+        >
+          Dołącz do Discorda
+        </Button>
+      </div>
 
       {errorMessageOnResponse && <Error>{errorMessageOnResponse}</Error>}
     </form>

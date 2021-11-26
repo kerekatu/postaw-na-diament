@@ -31,7 +31,7 @@ module.exports = {
     },
     extend: {
       gridTemplateRows: {
-        layout: '80px 1fr 80px',
+        layout: '1fr 80px',
       },
     },
   },

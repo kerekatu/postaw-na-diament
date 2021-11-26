@@ -8,7 +8,6 @@ import { PlayerContext } from '@/context/PlayerContext'
 import { RoomContext } from '@/context/RoomContext'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-import Image from 'next/image'
 import Error from '@/components/common/Error'
 
 const JoinRoomForm = () => {
@@ -63,17 +62,10 @@ const JoinRoomForm = () => {
 
   return (
     <form
-      className="flex flex-col items-center gap-4 w-96"
+      className="flex flex-col items-center gap-4"
       autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <Image
-        src="/static/logo.svg"
-        alt="Logo Uncut Diamonds"
-        className="pointer-events-none"
-        height={150}
-        width={400}
-      />
       <Input
         type="text"
         placeholder="Podaj swoją nazwę"
@@ -82,7 +74,7 @@ const JoinRoomForm = () => {
       />
       <Input
         type="text"
-        placeholder="Podaj numer pokoju"
+        placeholder="Podaj kod pokoju (4 znaki)"
         error={errors?.roomId?.message}
         {...register('roomId')}
       />
