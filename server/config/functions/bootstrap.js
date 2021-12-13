@@ -149,9 +149,9 @@ module.exports = () => {
             player: player[0].username,
             text: `Player ${player[0].username} has left the chat.`,
           });
-          io.to(player.roomId).emit("SET_ROOM_INFO", {
-            roomId: player.roomId,
-            players: await getPlayersInRoom(player.roomId),
+          io.to(player[0].roomId).emit("SET_ROOM_INFO", {
+            roomId: player[0].roomId,
+            players: await getPlayersInRoom(player[0].roomId),
           });
         }
       } catch (error) {

@@ -10,7 +10,7 @@ import GameLobby from '@/components/room/GameLobby'
 import { socket } from '@/libsweb-sockets'
 
 export default function Room() {
-  const { roomPlayers } = useContext(RoomContext)
+  const { setRoomPlayers, roomPlayers } = useContext(RoomContext)
   const { playerData } = useContext(PlayerContext)
 
   const [gameStarted, setGameStarted] = useState(false)
@@ -22,6 +22,15 @@ export default function Room() {
     socket.on('SET_PLAYING_STATUS', handler)
 
     return () => socket.off('SET_PLAYING_STATUS', handler)
+  }, [])
+
+  useEffect(() => {
+    const handler = (data) => {
+      setRoomPlayers(data.players)
+    }
+    socket.on('SET_ROOM_INFO', handler)
+
+    return () => socket.off('SET_ROOM_INFO', handler)
   }, [])
 
   useEffect(() => {
