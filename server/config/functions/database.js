@@ -8,6 +8,15 @@ async function createRoomWithHost({ roomId, hostId }) {
   }
 }
 
+async function deleteRoom(roomId) {
+  try {
+    const room = await strapi.services.rooms.delete({ roomId });
+    return room;
+  } catch (error) {
+    console.log("Coś poszło nie tak!", error);
+  }
+}
+
 // query players by roomId (in room)
 async function getPlayersInRoom(roomId) {
   try {
@@ -77,12 +86,23 @@ async function deletePlayer(socketId) {
   }
 }
 
+async function deletePlayers(roomId) {
+  try {
+    const players = await strapi.services.players.delete({ roomId });
+    return players;
+  } catch (error) {
+    console.log("Gracze nie mogli zostać usunięci!", error);
+  }
+}
+
 module.exports = {
   createRoomWithHost,
+  deleteRoom,
   getPlayersInRoom,
   findPlayer,
   createPlayer,
   deletePlayer,
+  deletePlayers,
   findRoomById,
   findRoomByHostId,
 };

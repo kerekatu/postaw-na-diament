@@ -28,6 +28,7 @@ const JoinRoomForm = () => {
     if (!mounted && Object.keys(playerData).length > 0) {
       mounted = true
       setPlayerData({})
+      setRoomPlayers({})
     }
   }, [])
 

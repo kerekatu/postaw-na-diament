@@ -7,6 +7,8 @@ const {
   deletePlayer,
   createRoomWithHost,
   findRoomByHostId,
+  deletePlayers,
+  deleteRoom,
 } = require("./database");
 const { Server } = require("socket.io");
 
@@ -141,9 +143,21 @@ module.exports = () => {
       }
     });
 
-    socket.on("disconnect", async (data) => {
+    socket.on("disconnect", async () => {
       try {
         const player = await deletePlayer(socket.id);
+
+        if (player.length > 0 && player[0].isHost) {
+          io.to(player[0].roomId).emit("HOST_DISCONNECT");
+          io.in(player[0].roomId).disconnectSockets();
+          return Promise.allSettled([
+            await deletePlayers(
+              player[0].roomId,
+              await deleteRoom(player[0].roomId)
+            ),
+          ]);
+        }
+
         if (player.length > 0) {
           io.to(player[0].roomId).emit("message", {
             player: player[0].username,

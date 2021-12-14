@@ -7,15 +7,30 @@ import Game from '@/components/room/Game'
 import Layout from '@/components/containers/Layout'
 import GameSidebar from '@/components/room/GameSidebar'
 import GameLobby from '@/components/room/GameLobby'
-import { socket } from '@/libsweb-sockets'
+import { socket } from '@/libs/web-sockets'
 
 export default function Room() {
   const { setRoomPlayers, roomPlayers } = useContext(RoomContext)
-  const { playerData } = useContext(PlayerContext)
+  const { setPlayerData, playerData } = useContext(PlayerContext)
 
   const [gameStarted, setGameStarted] = useState(false)
 
   const router = useRouter()
+
+  useEffect(() => {
+    socket.connect()
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
+
+  useEffect(() => {
+    const handler = () => router.push('/')
+    socket.on('HOST_DISCONNECT', handler)
+
+    return () => socket.off('HOST_DISCONNECT', handler)
+  }, [])
 
   useEffect(() => {
     const handler = (data) => data.isReady && setGameStarted(true)

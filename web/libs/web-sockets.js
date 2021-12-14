@@ -8,4 +8,4 @@ if (process.env.NODE_ENV !== 'production') {
   STRAPI_ENDPOINT = process.env.NEXT_PUBLIC_API_URL
 }
 
-export const socket = io(STRAPI_ENDPOINT)
+export const socket = io(STRAPI_ENDPOINT, { multiplex: false })
