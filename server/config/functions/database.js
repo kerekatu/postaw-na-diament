@@ -77,6 +77,23 @@ async function createPlayer({ username, roomId, status, isHost, socketId }) {
   }
 }
 
+async function updatePlayersInRoom({ status, money, roomId }) {
+  try {
+    // object to change
+    const players = await strapi.services.players.find({ roomId });
+    players.forEach(async (player) => {
+      await strapi.services.players.update(
+        { username: player?.username, roomId },
+        { status, money }
+      );
+    });
+
+    return players;
+  } catch (error) {
+    console.log("Gracze nie mogli zostać edytowani!", error);
+  }
+}
+
 async function deletePlayer(socketId) {
   try {
     const player = await strapi.services.players.delete({ socketId });
@@ -101,6 +118,7 @@ module.exports = {
   getPlayersInRoom,
   findPlayer,
   createPlayer,
+  updatePlayersInRoom,
   deletePlayer,
   deletePlayers,
   findRoomById,

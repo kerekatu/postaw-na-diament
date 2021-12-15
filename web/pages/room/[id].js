@@ -1,59 +1,12 @@
-import { useContext, useEffect, useState } from 'react'
-import { RoomContext } from '@/context/RoomContext'
-import { PlayerContext } from '@/context/PlayerContext'
-import { useRouter } from 'next/router'
-
 import Game from '@/components/room/Game'
 import Layout from '@/components/containers/Layout'
 import GameSidebar from '@/components/room/GameSidebar'
 import GameLobby from '@/components/room/GameLobby'
 import { socket } from '@/libs/web-sockets'
+import useRoomInitialize from '@/hooks/useRoomInitialize'
 
 export default function Room() {
-  const { setRoomPlayers, roomPlayers } = useContext(RoomContext)
-  const { setPlayerData, playerData } = useContext(PlayerContext)
-
-  const [gameStarted, setGameStarted] = useState(false)
-
-  const router = useRouter()
-
-  useEffect(() => {
-    socket.connect()
-
-    return () => {
-      socket.disconnect()
-    }
-  }, [])
-
-  useEffect(() => {
-    const handler = () => router.push('/')
-    socket.on('HOST_DISCONNECT', handler)
-
-    return () => socket.off('HOST_DISCONNECT', handler)
-  }, [])
-
-  useEffect(() => {
-    const handler = (data) => data.isReady && setGameStarted(true)
-    socket.on('SET_PLAYING_STATUS', handler)
-
-    return () => socket.off('SET_PLAYING_STATUS', handler)
-  }, [])
-
-  useEffect(() => {
-    const handler = (data) => {
-      setRoomPlayers(data.players)
-    }
-    socket.on('SET_ROOM_INFO', handler)
-
-    return () => socket.off('SET_ROOM_INFO', handler)
-  }, [])
-
-  useEffect(() => {
-    // send back to homepage if player is not defined
-    if (!Object.keys(playerData).length > 0) {
-      router.push('/')
-    }
-  }, [playerData, router])
+  const { roomPlayers, gameStarted, playerData } = useRoomInitialize()
 
   const handleStartGame = () => {
     socket.emit('START_GAME', playerData, (response) => {

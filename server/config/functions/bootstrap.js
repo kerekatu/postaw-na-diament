@@ -9,6 +9,7 @@ const {
   findRoomByHostId,
   deletePlayers,
   deleteRoom,
+  updatePlayersInRoom,
 } = require("./database");
 const { Server } = require("socket.io");
 
@@ -130,6 +131,10 @@ module.exports = () => {
         const room = await findRoomByHostId(data?.socketId);
 
         if (room) {
+          await updatePlayersInRoom({
+            status: "PLAYING",
+            roomId: data?.roomId,
+          });
           callback({ message: "Gra została rozpoczęta", status: "200" });
           io.to(data?.roomId).emit("SET_PLAYING_STATUS", {
             text: "Gra została rozpoczęta",
